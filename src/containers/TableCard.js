@@ -13,6 +13,24 @@ class TableCard extends Component {
 		};
 	}
 
+	fetchData = async function () {
+		const urls = [
+		'https://jsonplaceholder.typicode.com/users',
+		'https://jsonplaceholder.typicode.com/posts',
+		'https://jsonplaceholder.typicode.com/albums'
+	]
+		  try {
+			const arrayOfPromises = urls.map(url => fetch(url))
+			for await (let request of arrayOfPromises) {
+				const data = await request.json();
+				this.setState(data);
+			}
+		}
+		  catch (err) {
+			const error = `we had an error ${err}`;
+		}
+	}
+
 	renderTableHeader() {
 		let header = Object.keys(this.state.students[0]);
 		return header.map((key,i) => {

@@ -4,17 +4,19 @@ import TableCard from '../containers/TableCard';
 const AsyncAwait = () => {
 	const urls = [
 		'https://jsonplaceholder.typicode.com/users',
-		'https://jsonplaceholder.typicode.com/photos',
+		'https://jsonplaceholder.typicode.com/posts',
 		'https://jsonplaceholder.typicode.com/albums'
 	]
 	const fetchData = async function () {
 		  try {
-			const [ users, photos, albums ] = await Promise.all(urls.map(url => {
-			fetch(url).then(resp => resp.json())
-		}))
-			console.log(users)
-		} catch (err) {
-			 const error = `we had an error ${err}`;
+			const arrayOfPromises = urls.map(url => fetch(url))
+			for await (let request of arrayOfPromises) {
+				const data = await request.json();
+				this.setState(data);
+			}
+		}
+		  catch (err) {
+			const error = `we had an error ${err}`;
 		}
 	}
 
@@ -22,7 +24,7 @@ const AsyncAwait = () => {
 		<div>
 			<h2 className='titles'>async await</h2>
 			<h3 className='titles'>fetching urls and review the data</h3>
-			<TableCard props={this.fetchData()}/>
+			<TableCard fetchData={fetchData()}/>
 		</div>
 		)
 }
